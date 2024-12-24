@@ -1,22 +1,29 @@
 // functions that handle the logic for thoughtRoutes
+import Thought from '../models/thoughtModel.js';
 
 // @route GET /api/thoughts
 export const getThoughts = async (req, res) => {
   try {
-    // Logic to get all thoughts
-    res.status(200).json({ message: 'Get all thoughts' });
+    // fetch all thoughts from the database
+    const thoughts = await Thought.find();
+    // respond with the fetched thoughts
+    res.status(200).json(thoughts);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 };
 
-// @route GET /api/thoughts/:thoughtId
+// @route GET /api/thoughts/thoughtId
 export const getThoughtById = async (req, res) => {
-  const { thoughtId } = req.params;
   try {
-    // Logic to get a single thought by ID
-    res.status(200).json({ message: `Get thought with ID ${thoughtId}` });
+    // find a thought by ID
+    const thought = await Thought.findById(req.params.thoughtId);
+    if (!thought) {
+      return res.status(404).json({ message: 'Thought not found' });
+    }
+    // respond with the fetched thought
+    res.status(200).json(thought);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
@@ -25,48 +32,75 @@ export const getThoughtById = async (req, res) => {
 
 // @route POST /api/thoughts
 export const createThought = async (req, res) => {
-  const { body } = req;
   try {
-    // Logic to create a new thought
-    res.status(201).json({ message: 'Create a new thought', data: body });
+    // Create a new thought document and save it to the database
+    const thought = await Thought.create({ 
+      thoughtText: req.body.thoughtText, // Ensure the field name matches the schema
+      username: req.body.username
+    });
+    res.status(201).json(thought);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 };
 
-// @route PUT /api/thoughts/:thoughtId
+// @route PUT /api/thoughts/thoughtId
 export const updateThought = async (req, res) => {
-  const { thoughtId } = req.params;
-  const { body } = req;
   try {
-    // Logic to update a thought by ID
-    res.status(200).json({ message: `Update thought with ID ${thoughtId}`, data: body });
+    // Find the thought by ID
+    const thought = await Thought.findById(req.params.thoughtId);
+    if (!thought) {
+      return res.status(404).json({ message: 'Thought not found' });
+    }
+
+    // Update the thought
+    const updatedThought = await Thought.findByIdAndUpdate(req.params.thoughtId, req.body, {
+      new: true,
+      runValidators: true
+    });
+
+    // Respond with the updated thought
+    res.status(200).json(updatedThought);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 };
 
-// @route DELETE /api/thoughts/:thoughtId
+// @route DELETE /api/thoughts/thoughtId
 export const deleteThought = async (req, res) => {
-  const { thoughtId } = req.params;
   try {
-    // Logic to delete a thought by ID
-    res.status(200).json({ message: `Delete thought with ID ${thoughtId}` });
+    // Find the thought by ID and delete it
+    const thought = await Thought.findByIdAndDelete(req.params.thoughtId);
+    if (!thought) {
+      return res.status(404).json({ message: 'Thought not found' });
+    }
+    // Respond with a confirmation message
+    res.status(200).json({ message: `Thought with ID ${req.params.thoughtId} was deleted` });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
   }
 };
 
-// @route POST /api/thoughts/:thoughtId/reactions
+// @route POST /api/thoughts/thoughtId/reactions
 export const createReaction = async (req, res) => {
-  const { thoughtId } = req.params;
-  const { body } = req;
   try {
-    // Logic to create a new reaction
-    res.status(201).json({ message: 'Create a new reaction', data: body });
+    // Find the thought by ID
+    const thought = await Thought.findById(req.params.thoughtId);
+    if (!thought) {
+      return res.status(404).json({ message: 'Thought not found' });
+    }
+
+    // Add the new reaction to the reactions array
+    thought.reactions.push(req.body);
+
+    // Save the updated thought
+    await thought.save();
+
+    // Respond with the updated thought
+    res.status(201).json({ message: 'Create a new reaction', data: thought });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
@@ -75,10 +109,27 @@ export const createReaction = async (req, res) => {
 
 // @route DELETE /api/thoughts/:thoughtId/reactions/:reactionId
 export const deleteReaction = async (req, res) => {
-  const { thoughtId, reactionId } = req.params;
   try {
-    // Logic to delete a reaction by ID
-    res.status(200).json({ message: `Delete reaction with ID ${reactionId} from thought with ID ${thoughtId}` });
+    // Find the thought by ID
+    const thought = await Thought.findById(req.params.thoughtId);
+    if (!thought) {
+      return res.status(404).json({ message: 'Thought not found' });
+    }
+
+    // Find the reaction by ID and remove it
+    const reactionId = req.params.reactionId;
+    const reactionIndex = thought.reactions.findIndex(reaction => reaction._id.toString() === reactionId);
+    if (reactionIndex === -1) {
+      return res.status(404).json({ message: 'Reaction not found' });
+    }
+
+    thought.reactions.splice(reactionIndex, 1);
+
+    // Save the updated thought
+    await thought.save();
+
+    // Respond with a confirmation message
+    res.status(200).json({ message: `Delete reaction with ID ${reactionId} from thought with ID ${req.params.thoughtId}` });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
