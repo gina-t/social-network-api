@@ -51,44 +51,26 @@ npm install --save-dev nodemon
 
 ```
 
-6. 
+6. Create cluster in MongoDB Atlas cloud platform
 
+7. Create database, social_network_db and add collection names:
 
-7. 
+thoughts
 
-8. 
+users
 
-9. In server directory run the seed script:
+8. Create new connection with Compass
 
-```zsh
+9. Create config/db.js
 
-npm run seed
+10. Create models for User, Thought
 
-```
+11. Create schema for Reaction and export to Thought model
 
-10. 
+12. Add a virtual field named friendCount to UserSchema
 
-11. Generate a secure random string to use as JWT secret key and store in .env file. In root directory:
+13. Add a virtual field named reactionCount to ThoughtSchema
 
-```zsh
-
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-
-```
-11. In root run concurrently server:dev and client:dev:
-
-```zsh
-
-npm run start:dev
-
-```
-12. In root build the app:
-
-```zsh
-
-npm run build
-
-```
 
 
 ## Usage
