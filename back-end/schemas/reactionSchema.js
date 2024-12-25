@@ -1,6 +1,9 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
+import dateFormat from '../utils/dateFormat.js';
 
-const ReactionSchema = mongoose.Schema({
+const { Schema } = mongoose;
+
+const ReactionSchema = new Schema({
   reactionId: {
     type: Schema.Types.ObjectId,
     default: () => new mongoose.Types.ObjectId(),
