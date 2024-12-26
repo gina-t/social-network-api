@@ -102,22 +102,27 @@ export const addFriend = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    // Find the friend by ID
+    const friend = await User.findById(req.params.friendId);
+    if (!friend) {
+      return res.status(404).json({ message: 'Friend not found' });
+    }
+
     // Check if the friend already exists in the user's friends array
-    const friendId = req.params.friendId;
-    if (user.friends.includes(friendId)) {
+    if (user.friends.includes(req.params.friendId)) {
       return res.status(400).json({ message: 'Friend already exists' });
     }
 
     // Add the friend to the user's friends array
-    user.friends.push(friendId);
+    user.friends.push(req.params.friendId);
 
     // Save the updated user document
     await user.save();
 
     // Respond with a confirmation message including the added friend
     res.status(200).json({ 
-      message: `Friend with ID ${friendId} was added to user with ID ${req.params.userId}`,
-      addedFriend: friendId
+      message: `Friend ${friend.username} with ID ${req.params.friendId} was added to user ${user.username} with ID ${req.params.userId}`,
+      addedFriend: friend.username
     });
   } catch (error) {
     console.error(error.message);
@@ -171,8 +176,12 @@ export const getUserFriendCount = async (req, res) => {
     // Convert the user document to JSON to include virtuals
     const userJson = user.toJSON();
 
-    // Respond with the friend count
-    res.status(200).json({ friendCount: userJson.friendCount });
+    // Respond with the friend count and user's name
+    res.status(200).json({ 
+      message: `User ${user.username} has ${userJson.friendCount} friends.`,
+      friendCount: userJson.friendCount,
+      username: user.username
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
