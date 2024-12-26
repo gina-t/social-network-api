@@ -94,19 +94,19 @@ Link to walk-through video:
 Screenshots of app demonstarting functionality of api/users:
 
 ### screenshot-1
-![get all users](./assets/screenshot-1.png)
+![get all users](./back-end/assets/screenshot-1.png)
 
 ### screenshot-2
-![get single user by id](./assets/screenshot-2.png)
+![get single user by id](./back-end/assets/screenshot-2.png)
 
 ### screenshot-3
-![create a new user](./assets/screenshot-3.png)
+![create a new user](./back-end/assets/screenshot-3.png)
 
 ### screenshot-4
-![add a friend to user's friends array](./assets/screenshot-4.png)
+![add a friend to user's friends array](./back-end/assets/screenshot-4.png)
 
 ### screenshot-5
-![get a user's friend count](./assets/screenshot-5.png)
+![get a user's friend count](./back-end/assets/screenshot-5.png)
 
 
 ## License
