@@ -19,6 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 // routes
 app.use('/api/thoughts', thoughtRoutes);
 app.use('/api/users', userRoutes);
+
+// error handler middleware
 app.use(errorHandler);
 
 app.listen(PORT, () => {

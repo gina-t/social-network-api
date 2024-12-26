@@ -1,4 +1,5 @@
 // functions that handle the logic for thoughtRoutes
+// functions that fetch requests from mongoDB using mongoose
 import mongoose from 'mongoose';
 import Thought from '../models/thoughtModel.js';
 
@@ -31,7 +32,7 @@ export const getThoughtById = async (req, res) => {
   }
 };
 
-// @route POST /api/thoughts
+// @route POST /api/thoughts/
 export const createThought = async (req, res) => {
   try {
     // Create a new thought document and save it to the database
