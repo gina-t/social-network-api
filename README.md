@@ -71,22 +71,43 @@ users
 
 13. Add a virtual field named reactionCount to ThoughtSchema
 
+14. Create API routes for:
+
+/api/users
+
+/api/thoughts
+
+15. Start the application's server:
+
+```zsh
+
+npm run start
+
+```
 
 
 ## Usage
 
+
 Link to walk-through video:
 
-Screenshots of app demonstarting functionality:
+Screenshots of app demonstarting functionality of api/users:
 
 ### screenshot-1
-![home page](./client/src/assets/screenshot-1.png)
+![get all users](./assets/screenshot-1.png)
 
 ### screenshot-2
-![login page](./client/src/assets/screenshot-2.png)
+![get single user by id](./assets/screenshot-2.png)
 
 ### screenshot-3
-![board page](./client/src/assets/screenshot-3.png)
+![create a new user](./assets/screenshot-3.png)
+
+### screenshot-4
+![add a friend to user's friends array](./assets/screenshot-4.png)
+
+### screenshot-5
+![get a user's friend count](./assets/screenshot-5.png)
+
 
 ## License
 
