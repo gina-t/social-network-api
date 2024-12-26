@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import User from '../models/userModel.js';
 
 // @route GET /api/users/
+// @desc  Get all users
 export const getUsers = async (req, res) => {
   try {
     // fetch all users from the database
@@ -16,6 +17,7 @@ export const getUsers = async (req, res) => {
 };
 
 // @route GET /api/users/:userId
+// @desc  Get a single user by ID
 export const getUserById = async (req, res) => {
   try {
     // find a user by ID
@@ -32,6 +34,7 @@ export const getUserById = async (req, res) => {
 };
 
 // @route POST /api/users/
+// @desc  Create a new user
 export const createUser = async (req, res) => {
   try {
     // Create a new user document and save it to the database
@@ -50,6 +53,7 @@ export const createUser = async (req, res) => {
 };
 
 // @route PUT /api/users/:userId
+// @desc  Update a user by ID
 export const updateUser = async (req, res) => {
   try {
     // Find a user by ID
@@ -71,22 +75,17 @@ export const updateUser = async (req, res) => {
 };
 
 // @route DELETE /api/users/:userId
+// @desc  Delete a user by ID and associated thoughts
 export const deleteUser = async (req, res) => {
   try {
-    // Find the user by ID
-    const user = await User.findById(req.params.userId);
+    // Find the user by ID and delete it
+    const user = await User.findByIdAndDelete(req.params.userId);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Store the user's name
-    const userName = user.username;
-
-    // Delete the user
-    await User.findByIdAndDelete(req.params.userId);
-
     // Respond with a confirmation message that user was deleted
-    res.status(200).json({ message: `User ${userName} with ID ${req.params.userId} was deleted` });
+    res.status(200).json({ message: `User ${user.username} with ID ${req.params.userId} was deleted` });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
@@ -94,6 +93,7 @@ export const deleteUser = async (req, res) => {
 };
 
 // @route POST /api/users/:userId/friends/:friendId
+// @desc  Add a friend to a user's friends array
 export const addFriend = async (req, res) => {
   try {
     // Find the user by ID
@@ -126,6 +126,7 @@ export const addFriend = async (req, res) => {
 };
 
 // @route DELETE /api/users/:userId/friends/:friendId
+// @desc  Delete a friend from a user's friends array
 export const deleteFriend = async (req, res) => {
   try {
     // Find the user by ID
@@ -144,6 +145,34 @@ export const deleteFriend = async (req, res) => {
       removedFriend: friendId
     });
 
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @route GET /api/users/:userId/friends
+// @desc  Get a user's friend count
+export const getUserFriendCount = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Validate ObjectId
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    // Find the user by ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Convert the user document to JSON to include virtuals
+    const userJson = user.toJSON();
+
+    // Respond with the friend count
+    res.status(200).json({ friendCount: userJson.friendCount });
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ message: error.message });
