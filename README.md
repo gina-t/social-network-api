@@ -89,7 +89,7 @@ npm run start
 ## Usage
 
 
-Link to walk-through video:
+Link to walk-through video: https://drive.google.com/file/d/1z0veiWE4IFFzh1ExgKp_k1dAR1pBnPc5/view?usp=drive_link
 
 Screenshots of app demonstarting functionality of api/users:
 
